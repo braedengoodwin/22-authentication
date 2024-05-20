@@ -29,18 +29,21 @@ export async function action({ request }) {
     body: JSON.stringify(authData),
   });
 
-  if (response.status === 422 || response.status === 401){
+  if (response.status === 422 || response.status === 401) {
     return response;
   }
 
-  if(!response.ok){
-    throw json({message: 'Could not authenticate user.'}, {status: 500})
+  if (!response.ok) {
+    throw json({ message: "Could not authenticate user." }, { status: 500 });
   }
 
-  const resData = await response.json()
-  const token = resData.token
+  const resData = await response.json();
+  const token = resData.token;
 
-  localStorage.setItem('token', token)
+  localStorage.setItem("token", token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem("expiration", expiration.toISOString());
 
-  return redirect('/')
+  return redirect("/");
 }
